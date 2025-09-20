@@ -1,53 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>News App</title>
+    <title>News Explorer</title>
     <style>
-         .grid-item {
+        .grid-item {
             border: 1px solid #ccc;
             padding: 10px;
-            padding-bottom: 2px; /* Add extra bottom padding */
+            padding-bottom: 2px;
+            /* Add extra bottom padding */
             text-align: center;
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             display: flex;
             flex-direction: column;
             height: 100%;
-            margin-bottom: 15px; /* Add margin between cards */
+            margin-bottom: 15px;
+            /* Add margin between cards */
         }
+
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px; /* Increase gap between grid items */
+            gap: 20px;
+            /* Increase gap between grid items */
             padding: 20px;
-            padding-bottom: 40px; /* Add extra bottom padding to container */
+            padding-bottom: 40px;
+            /* Add extra bottom padding to container */
         }
+
         .grid-item img {
             max-width: 100%;
             height: auto;
             border-radius: 4px;
             margin-bottom: 10px;
         }
+
         .grid-item h4 {
             font-size: 1.1rem;
             margin: 0 0 8px 0;
             color: #1a237e;
         }
+
         .grid-item p {
             font-size: 0.97rem;
             color: #444;
             flex: 1;
         }
+
         body {
             background: #f4f6f8;
             font-family: Arial, sans-serif;
         }
+
         .search-container {
             text-align: center;
             margin: 20px 0;
         }
+
         .search-container input {
             padding: 10px;
             width: 300px;
@@ -55,6 +67,7 @@
             border-radius: 5px;
             font-size: 16px;
         }
+
         .search-container button {
             padding: 10px 20px;
             margin-left: 10px;
@@ -65,10 +78,12 @@
             font-size: 16px;
             cursor: pointer;
         }
+
         .search-container button:hover {
             background: #1565c0;
         }
-         .article-date {
+
+        .article-date {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             font-size: 0.85rem;
@@ -77,8 +92,9 @@
             margin: 8px 0;
             display: inline-block;
             font-weight: 500;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .grid-item a {
             color: #1976d2;
             text-decoration: none;
@@ -89,21 +105,24 @@
             border-radius: 5px;
             transition: all 0.3s ease;
         }
+
         .grid-item a:hover {
             background: #1976d2;
             color: white;
         }
     </style>
 </head>
+
 <body>
-    <h2 style="text-align:center;">News Grid</h2>
+    <h2 style="text-align:center;">News Explorer</h2>
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Enter search query (e.g., technology, sports, politics)" value="technology">
+        <input type="text" id="searchInput" placeholder="Enter search query (e.g., technology, sports, politics)"
+            value="technology">
         <button onclick="searchNews()">Search News</button>
     </div>
     <div class="grid-container" id="newsGrid"></div>
 
-   <script>
+    <script>
         function formatDate(dateString) {
             const date = new Date(dateString);
             const now = new Date();
@@ -111,7 +130,7 @@
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
             const diffMinutes = Math.floor(diffTime / (1000 * 60));
-            
+
             if (diffMinutes < 60) {
                 return `${diffMinutes} min ago`;
             } else if (diffHours < 24) {
@@ -130,34 +149,34 @@
         function loadNews(query = 'technology') {
             const grid = document.getElementById('newsGrid');
             grid.innerHTML = '<p>Loading...</p>';
-            
+
             fetch(`/api/news?q=${encodeURIComponent(query)}`)
                 .then(res => res.json())
                 .then(data => {
                     console.log('API Response:', data);
                     let articles = data.articles || [];
-                    
+
                     // Sort articles by publishedAt date (newest first)
                     articles = articles.sort((a, b) => {
                         return new Date(b.publishedAt) - new Date(a.publishedAt);
                     });
-                    
+
                     grid.innerHTML = '';
-                    
+
                     if (articles.length === 0) {
                         grid.innerHTML = '<p>No articles found.</p>';
                         return;
                     }
-                    
+
                     articles.forEach(article => {
                         const item = document.createElement('div');
                         item.className = 'grid-item';
-                        
-                        const imageHtml = article.urlToImage ? 
+
+                        const imageHtml = article.urlToImage ?
                             `<img src="${article.urlToImage}" alt="${article.title}" onerror="this.style.display='none'">` : '';
-                        
+
                         const formattedDate = formatDate(article.publishedAt);
-                        
+
                         item.innerHTML = `
                             ${imageHtml}
                             <h4>${article.title}</h4>
@@ -173,7 +192,7 @@
                     grid.innerHTML = '<p>Error loading news.</p>';
                 });
         }
-        
+
         function searchNews() {
             const query = document.getElementById('searchInput').value.trim();
             if (query) {
@@ -182,16 +201,17 @@
                 alert('Please enter a search query');
             }
         }
-        
+
         // Allow Enter key to trigger search
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 searchNews();
             }
         });
-        
+
         // Load default news on page load
         loadNews();
     </script>
 </body>
+
 </html>
