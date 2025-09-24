@@ -52,7 +52,7 @@
    - Create a `.env` file in the root directory
    - Add your NewsAPI key:
      ```env
-     NEWSAPI_KEY="your_api_key_here"
+     NEWS_API_KEY=enter your api key
      PORT=1234
      ```
 
